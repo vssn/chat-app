@@ -11,3 +11,18 @@ Payload:
   "email": "max@example.com",
   "password": "notSoSafe567&"
 }
+
+POST URL:
+http://localhost:5000/api/users/login
+
+Payload:
+{
+  "email": "max@example.com",
+  "password": "notSoSafe567&"
+}
+
+GET URL:
+http://localhost:5000/api/users/find/:userId
+
+GET URL:
+http://localhost:5000/api/users/
