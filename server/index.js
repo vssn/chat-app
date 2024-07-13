@@ -6,11 +6,14 @@ const userRoute = require("./Routes/userRoute.js")
 const app = express()
 require("dotenv").config()
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8000;
 const uri = process.env.ATLAS_URI;
 
+app.use(cors({
+    origin: '*',
+    optionsSuccessStatus: 200
+}))
 app.use(express.json())
-app.use(cors())
 app.use("/api/users", userRoute)
 
 app.get("/", (req, res) => {
