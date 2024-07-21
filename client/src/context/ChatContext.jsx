@@ -22,7 +22,7 @@ export const ChatContextProvider = ({ children, user }) => {
     }
 
     getUserChats()
-  } [])
+  }, [])
 
   return (
     <ChatContext.Provider
