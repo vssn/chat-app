@@ -6,8 +6,9 @@ export const ChatContext = createContext();
 export const ChatContextProvider = ({ children, user }) => {
   const [userChats, setUserChats] = useState(null);
   const [isUserChatsLoading, setIsUserChatsLoading] = useState(false);
-  const [userChatsError, setUserChatsError] = useState(null);
+  const [userChatsError, setUserChatsError] = useState([]);
 
+  
   useEffect(() => {
     const getUserChats = async () => {
       if (user?._id) {
@@ -27,7 +28,7 @@ export const ChatContextProvider = ({ children, user }) => {
     };
 
     getUserChats();
-  }, []);
+  }, [user]);
 
   return (
     <ChatContext.Provider
