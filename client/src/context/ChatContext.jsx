@@ -13,7 +13,7 @@ export const ChatContextProvider = ({ children, user }) => {
   const [isMessageLoading, setMessagesLoading] = useState(false);
   const [messagesError, setMessagesError] = useState(null);
 
-  console.log("currentCHat", currentChat)
+  console.log("messages", messages)
 
   useEffect(() => {
     const getUsers = async () => {
@@ -26,7 +26,12 @@ export const ChatContextProvider = ({ children, user }) => {
 
       const pChats = response.filter((u) => {
         let isChatCreated = false;
-        console.log("USER", user)
+        
+        if(user === null) {
+          console.info("User is not set")
+          return;
+        }
+
         if (user._id === u._id) return false;
 
         if (userChats) {
@@ -87,7 +92,6 @@ export const ChatContextProvider = ({ children, user }) => {
   }, [currentChat]);
 
   const updateCurrentChat = useCallback((chat) => {
-    console.log("CURRENT CHAT IS SET", chat)
     setCurrentChat(chat);
   }, []);
 
@@ -116,6 +120,7 @@ export const ChatContextProvider = ({ children, user }) => {
         potentialChats,
         createChat,
         updateCurrentChat,
+        currentChat,
         messages,
         isMessageLoading,
         messagesError
