@@ -9,11 +9,15 @@ export const ChatContextProvider = ({ children, user }) => {
   const [userChatsError, setUserChatsError] = useState(null);
   const [potentialChats, setPotentialChats] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
+  
   const [messages, setMessages] = useState(null);
   const [isMessageLoading, setMessagesLoading] = useState(false);
   const [messagesError, setMessagesError] = useState(null);
 
-  console.log("messages", messages)
+  const [sendTextMessageError, setSendTextMessageError] = useState(null)
+  const [newMessage, setNewMessage] = useState(null)
+
+  console.log("messages", messages);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -22,13 +26,13 @@ export const ChatContextProvider = ({ children, user }) => {
         return console.log("Error fetching users", response);
       }
 
-      console.log(response)
+      console.log(response);
 
       const pChats = response.filter((u) => {
         let isChatCreated = false;
-        
-        if(user === null) {
-          console.info("User is not set")
+
+        if (user === null) {
+          console.info("User is not set");
           return;
         }
 
@@ -72,12 +76,14 @@ export const ChatContextProvider = ({ children, user }) => {
 
   useEffect(() => {
     const getMessages = async () => {
-      console.log("GET MESSAGES")
+      console.log("GET MESSAGES");
 
       setMessagesLoading(true);
       setMessagesError(null);
 
-      const response = await getRequest(`${baseUrl}/messages/${currentChat?._id}`);
+      const response = await getRequest(
+        `${baseUrl}/messages/${currentChat?._id}`
+      );
 
       setMessagesLoading(false);
 
@@ -90,6 +96,30 @@ export const ChatContextProvider = ({ children, user }) => {
 
     getMessages();
   }, [currentChat]);
+
+  const sendTextMessage = useCallback(
+    async (textMessage, sender, currentChatId, setTextMessage) => {
+      if (!textMessage) return console.log("You must type a message...");
+
+      const response = await postRequest(
+        `${baseUrl}/messages`,
+        JSON.stringify({
+          chatId: currentChatId,
+          senderId: sender._id,
+          text: textMessage,
+        })
+      );
+
+      if (response.error) {
+        return setSendTextMessageError(response);
+      }
+
+      setNewMessage(response)
+      setMessages((prev) => [...prev, response])
+      setTextMessage("")
+    },
+    []
+  );
 
   const updateCurrentChat = useCallback((chat) => {
     setCurrentChat(chat);
@@ -123,7 +153,8 @@ export const ChatContextProvider = ({ children, user }) => {
         currentChat,
         messages,
         isMessageLoading,
-        messagesError
+        messagesError,
+        sendTextMessage,
       }}
     >
       {children}
