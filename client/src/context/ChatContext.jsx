@@ -1,5 +1,6 @@
 import { createContext, useCallback, useEffect, useState } from "react";
 import { baseUrl, getRequest, postRequest } from "../utils/services";
+import { io } from "socket.io-client";
 
 export const ChatContext = createContext();
 
@@ -9,15 +10,24 @@ export const ChatContextProvider = ({ children, user }) => {
   const [userChatsError, setUserChatsError] = useState(null);
   const [potentialChats, setPotentialChats] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
-  
+
   const [messages, setMessages] = useState(null);
   const [isMessageLoading, setMessagesLoading] = useState(false);
   const [messagesError, setMessagesError] = useState(null);
 
-  const [sendTextMessageError, setSendTextMessageError] = useState(null)
-  const [newMessage, setNewMessage] = useState(null)
+  const [sendTextMessageError, setSendTextMessageError] = useState(null);
+  const [newMessage, setNewMessage] = useState(null);
 
-  console.log("messages", messages);
+  const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    const newSocket = io("http://localhost:3000");
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.disconnect()
+    }
+  }, [user]);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -114,9 +124,9 @@ export const ChatContextProvider = ({ children, user }) => {
         return setSendTextMessageError(response);
       }
 
-      setNewMessage(response)
-      setMessages((prev) => [...prev, response])
-      setTextMessage("")
+      setNewMessage(response);
+      setMessages((prev) => [...prev, response]);
+      setTextMessage("");
     },
     []
   );
