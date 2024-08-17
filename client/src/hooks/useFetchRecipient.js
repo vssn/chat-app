@@ -23,7 +23,7 @@ export const useFetchRecipientUser = (chat, user) => {
         getUser()
     }, [recipientId])
 
-    console.log("returning useFetchRecipientUser", recipientUser)
+    // console.log("returning useFetchRecipientUser", recipientUser)
     
     return {recipientUser}
 }
